@@ -1,7 +1,7 @@
 {
-  "name": "fs-app-template",
+  "name": "grace-shopper",
   "version": "2.0.0",
-  "description": "Some boilerplate code to get you started - get shakin'!",
+  "description": "Grace Shopper project",
   "main": "index.js",
   "scripts": {
     "build": "webpack",
@@ -17,7 +17,7 @@
     "test:dev:models": "npm run test:dev -- --grep=model",
     "test:dev:routes": "npm run test:dev -- --grep=route"
   },
-  "author": "Fullstack Academy of Code",
+  "author": "Fullstack Academy Saanen Group",
   "license": "MIT",
   "dependencies": {
     "axios": "^0.21.1",
