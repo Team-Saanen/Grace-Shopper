@@ -7,15 +7,17 @@ const fs = require('fs');
 const masseuse = async function() {
     let plantObjects;
     try {
-        const dataString = fs.readFileSync('plants.json', 'utf-8');
+        // This path assumes masseuse is being called via npm run seed.
+        const dataString = fs.readFileSync('./script/plants.json', 'utf-8');
         plantObjects = JSON.parse(dataString);
     } catch (err) {
         console.error(err);
     }
 
-    for (plant of plantObjects) {
-        console.log(plant.name, plant.image);
-    }
+    // for (plant of plantObjects) {
+    //     console.log(plant);
+    // }
+    return plantObjects;
 }
 
-masseuse();
+module.exports = masseuse;

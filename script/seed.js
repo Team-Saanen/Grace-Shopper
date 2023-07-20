@@ -1,16 +1,17 @@
 'use strict'
 
-const {db, models: {User, Products} } = require('../server/db')
+const {db, models: {User, Products, Cart, Sales} } = require('../server/db')
+const masseuse = require('./masseuse');
 
 /**
  * seed - this function clears the database, updates tables to
  *      match the models, and populates the database.
  */
 async function seed() {
-  await db.sync({ force: true }) // clears db and matches models to tables
-  console.log('db synced!')
+  await db.sync({ force: true }); // clears db and matches models to tables
+  console.log('db synced!');
 
-  // Creating Users
+  // Create Users
   const users = await Promise.all([
     User.create({ 
       firstName: 'Cody',
@@ -23,19 +24,35 @@ async function seed() {
       firstName: 'Murphy',
       lastName: 'mcMurphington',
       email: 'murphy@murphacheussetsinstituteoftechnology.edu',
-      username: 'murphy', 
+      userName: 'murphy', 
       password: 'abc123' 
     }),
-  ])
+  ]);
 
-  console.log(`seeded ${users.length} users`)
-  console.log(`seeded successfully`)
-  return {
-    users: {
-      cody: users[0],
-      murphy: users[1]
-    }
+  console.log(`seeded ${users.length} users`);
+
+  // TODO: Is there a value to these returns?
+  // return {
+  //   users: {
+  //     cody: users[0],
+  //     murphy: users[1]
+  //   }
+  // }
+
+  // Create Products!!!!!
+  const products = await masseuse();
+  // console.log(products[0]);
+  for (const product of products) {
+    await Products.create({
+      productName: product.name,
+      productImg: product.image,
+      description: product.description,
+      quantity: product.quantity,
+      price: product.price
+    });
   }
+
+  console.log(`seeded successfully`);
 }
 
 /*
