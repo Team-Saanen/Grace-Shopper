@@ -1,5 +1,5 @@
 /**
- * An (ideally) fire-an-forget script to generate seed data for our DB.
+ * An (ideally) fire-an-forget script to grab sample data.
  * 
  * Plant info retrieved from perenual.com: https://perenual.com/docs/api
  * Use of API requires a key.
