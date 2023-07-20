@@ -1,14 +1,28 @@
-import {createStore, combineReducers, applyMiddleware} from 'redux'
-import {createLogger} from 'redux-logger'
-import thunkMiddleware from 'redux-thunk'
-import {composeWithDevTools} from 'redux-devtools-extension'
-import auth from './auth'
+import { configureStore } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
+import authReducer from './auth'
+import productReducer from './productSlice';
+import productsReducer from './productsSlice';
+import userReducer from './userSlice';
+import usersReducer from './usersSlice';
+import cartReducer from './cartSlice';
+import cartItemReducer from './cartItemSlice'
+import salesReducer from './salesSlice';
+// import authReducer from '../features/auth/authSlice';
 
-const reducer = combineReducers({ auth })
-const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({collapsed: true}))
-)
-const store = createStore(reducer, middleware)
+const store = configureStore({
+  reducer: { 
+    auth: authReducer, 
+    product: productReducer,
+    products: productsReducer,
+    user: userReducer,
+    users: usersReducer,
+    cart: cartReducer,
+    cartItem: cartItemReducer,
+    sales: salesReducer
+},
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+});
 
-export default store
-export * from './auth'
+export default store;
+export * from '../features/auth/authSlice';
