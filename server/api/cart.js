@@ -20,7 +20,7 @@ router.put('/cart/:productId', async (req, res, next) => {
         return res.status(404).json({ error: 'Product not found' });
       }
   
-      await CartItem.create({ cartId: cart.id, productId, quantity: 1 });
+      await Cart.create({ cartId: cart.id, productId, quantity: 1 });
   
       res.json({ message: 'Product added to cart successfully' });
     } catch (error) {
@@ -43,12 +43,12 @@ router.put('/cart/:productId/quantity', async (req, res, next) => {
         return res.status(404).json({ error: 'Cart not found' });
       }
   
-      const cartItem = await CartItem.findOne({ where: { cartId: cart.id, productId } });
+      const cartItem = await Cart.findOne({ where: { cartId: cart.id, productId } });
   
       if (cartItem) {
         // If the item already exists in the cart, update the quantity
-        cartItem.quantity = quantity;
-        await cartItem.save();
+        Cart.quantity = quantity;
+        await Cart.save();
       } else {
         // If the item is not found in the cart, return an error
         return res.status(404).json({ error: 'Product not found in cart' });
