@@ -13,8 +13,8 @@ User.hasMany(Sales);
 User.hasOne(Cart);
 Sales.belongsTo(User);
 Cart.belongsTo(User);
-Products.belongsToMany(Cart);
-Products.belongsToMany(Sales);
+// Products.belongsToMany(Cart);
+// Products.belongsToMany(Sales);
 
 module.exports = {
   db,

@@ -94,6 +94,6 @@ User.prototype.correctPassword = function(candidatePwd) {
     }
   }
   
-  User.beforeCreate(hashPassword)
-  User.beforeUpdate(hashPassword)
+  // User.beforeCreate(hashPassword)
+  // User.beforeUpdate(hashPassword)
   User.beforeBulkCreate(users => Promise.all(users.map(hashPassword)))
