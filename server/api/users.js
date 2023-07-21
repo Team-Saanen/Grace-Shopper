@@ -25,7 +25,7 @@ router.get('/:productId', async (req, res, next) => {
   }
 });
 
-  router.post('/signup', async (req, res, next) => {
+router.post('/signup', async (req, res, next) => {
     try {
       const { username, password } = req.body;
   
@@ -55,43 +55,44 @@ router.get('/:productId', async (req, res, next) => {
   });
 
 
-  // Get client's user information based on log in status
-  router.get('/user/:userId', (req, res, next) => {
-    // Check if the client is authenticated
-    if (req.user) {
-      // Retrieve the authenticated user's information
-      const userId = req.user.userId;
-      const firstName = req.user.firstName;
-      const lastName = req.user.lastName;
-      const username = req.user.username
-      const email = req.user.email;
-  
-      // Return the user information as json
-      res.json({
-        userId,
-        firstName,
-        lastName,
-        email,
-        username
-      });
-    } else {
-      // Client is not authenticated
-      res.status(401).json({ error: 'User not authenticated' });
-    }
-  });
-  
-  router.get('/user/:userId/order-history', async (req, res, next) => {
-    try {
-      const userId = req.params.userId;
-  
-      // Query the Sales model for all sales associated with the user's ID
-      const orderHistory = await Sales.findAll({ where: { userId } });
-  
-      res.json(orderHistory);
-    } catch (error) {
-      next(error);
-    }
-  });
+// Get client's user information based on log in status
+router.get('/user/:userId', (req, res, next) => {
+  // Check if the client is authenticated
+  if (req.user) {
+    // Retrieve the authenticated user's information
+    const userId = req.user.userId;
+    const firstName = req.user.firstName;
+    const lastName = req.user.lastName;
+    const username = req.user.username;
+    const email = req.user.email;
+
+    // Return the user information as json
+    res.json({
+      userId,
+      firstName,
+      lastName,
+      email,
+      username,
+    });
+  } else {
+    // Client is not authenticated
+    res.status(401).json({ error: 'User not authenticated' });
+  }
+});
+
+// Get order history for a user based on their ID
+router.get('/user/:userId/order-history', async (req, res, next) => {
+  try {
+    const userId = req.params.userId;
+
+    // Query the Sales model for all sales associated with the user's ID
+    const orderHistory = await Sales.findAll({ where: { userId } });
+
+    res.json(orderHistory);
+  } catch (error) {
+    next(error);
+  }
+});
   
   // Put to update the user's information based on ID
   router.put('/user/:userId', async (req, res, next) => {
