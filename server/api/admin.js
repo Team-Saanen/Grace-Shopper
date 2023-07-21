@@ -1,9 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { models: { User, Products }} = require('../db');
+const {
+  models: { User, Products },
+} = require("../db");
 
 // Create a new product based on the request body
-router.post('/products', async (req, res, next) => {
+router.post("/products", async (req, res, next) => {
   try {
     const newProduct = await Product.create(req.body);
     res.status(201).json(newProduct);
@@ -12,10 +14,7 @@ router.post('/products', async (req, res, next) => {
   }
 });
 
-
-
 // const { verifyToken } = require('../auth');
-
 
 // //admins -all users
 // router.get('/users', verifyToken, async (req, res, next) => {
@@ -49,4 +48,4 @@ router.post('/products', async (req, res, next) => {
 //   }
 // });
 
-module.exports = router;
+// module.exports = router;
