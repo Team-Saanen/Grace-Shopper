@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { models: { User, Products, Cart, Sales }} = require('../db');
+const { models: { User, Products, Sales }} = require('../db');
 
 //Homepage
 router.get('/', async (req, res, next) => {
@@ -12,58 +12,18 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:productId', async(req, res, next) =>{
-    try {
-        const product = await Products.findByPk(req.params.productId);
-        if(productId){
-            res.json(user);
-        }else {
-            res.status(404).send('Product not found')
-        }
-    }catch (error) {
-        next(error);
-    }
-});
-//Only use this route if user is logged in
-router.put('/cart/:productId', async (req, res, next) => {
-    try {
-      const productId = req.params.productId;
-      const quantity = req.body.quantity;
-      const userId = req.user.id;
-  
-      let cart = await Cart.findOne({ where: { userId } });
-  
-      // If the cart doesn't exist, create a new cart entry for the user
-      if (!cart) {
-        cart = await Cart.create({
-          userId,
-          productIds: [productId],
-          quantities: [quantity]
-        });
-  
-        return res.json({ message: 'Product added to cart successfully' });
-      }
-  
-      // Check if the productId already exists in the productIds array
-      const productIndex = cart.productIds.indexOf(productId);
-  
-      if (productIndex !== -1) {
-        // If the productId already exists, update the corresponding quantity
-        cart.quantities[productIndex] += quantity;
+router.get('/:productId', async (req, res, next) => {
+  try {
+      const product = await Products.findByPk(req.params.productId);
+      if (product) {
+          res.json(product);
       } else {
-        // If the productId is not found, add it to the arrays
-        cart.productIds.push(productId);
-        cart.quantities.push(quantity);
+          res.status(404).send('Product not found');
       }
-  
-      // Save the updated cart
-      await cart.save();
-  
-      res.json({ message: 'Product added to cart successfully' });
-    } catch (error) {
+  } catch (error) {
       next(error);
-    }
-  });
+  }
+});
 
   router.post('/signup', async (req, res, next) => {
     try {
@@ -73,6 +33,12 @@ router.put('/cart/:productId', async (req, res, next) => {
       const existingUser = await User.findOne({ where: { username } });
       if (existingUser) {
         return res.status(409).json({ error: 'Username already exists' });
+      }
+
+      // Check if the email already exists
+      const existingEmail = await User.findOne({ where: { email } });
+      if (existingEmail) {
+        return res.status(409).json({ error: 'Email already in use' });
       }
   
       // Create a new user
@@ -88,35 +54,71 @@ router.put('/cart/:productId', async (req, res, next) => {
     }
   });
 
-  router.post('/checkout', async (req, res, next) => {
-    try {
-      const userId = req.user.id;
-      const cart = await Cart.findOne({ where: { userId } });
+
+  // Get client's user information based on log in status
+  router.get('/user/:userId', (req, res, next) => {
+    // Check if the client is authenticated
+    if (req.user) {
+      // Retrieve the authenticated user's information
+      const userId = req.user.userId;
+      const firstName = req.user.firstName;
+      const lastName = req.user.lastName;
+      const username = req.user.username
+      const email = req.user.email;
   
-      if (!cart) {
-        return res.status(404).json({ error: 'Cart not found' });
-      }
-  
-      // Retrieve the productIds, quantities, and calculate the total price
-      const { productIds, quantities } = cart;
-      const totalPrice = calculateTotalPrice(productIds, quantities);
-  
-      // Create a new sales entry
-      const newSale = await Sales.create({
+      // Return the user information as json
+      res.json({
         userId,
-        quantities,
-        items: productIds,
-        totalPrice,
-        dateTime: new Date()
+        firstName,
+        lastName,
+        email,
+        username
       });
+    } else {
+      // Client is not authenticated
+      res.status(401).json({ error: 'User not authenticated' });
+    }
+  });
   
-      // Clear the user's cart after successful purchase
-      await cart.destroy();
+  router.get('/user/:userId/order-history', async (req, res, next) => {
+    try {
+      const userId = req.params.userId;
   
-      res.status(201).json({ message: 'Purchase completed successfully', saleId: newSale.id });
+      // Query the Sales model for all sales associated with the user's ID
+      const orderHistory = await Sales.findAll({ where: { userId } });
+  
+      res.json(orderHistory);
     } catch (error) {
       next(error);
     }
   });
   
+  // Put to update the user's information based on ID
+  router.put('/user/:userId', async (req, res, next) => {
+    try {
+      const userId = req.params.userId;
+      const { firstName, lastName, email } = req.body;
+  
+      // Find the user by ID
+      const user = await User.findByPk(userId);
+  
+      // Check if the user exists
+      if (!user) {
+        return res.status(404).json({ error: 'User not found' });
+      }
+  
+      // Update the user information
+      user.firstName = firstName;
+      user.lastName = lastName;
+      user.email = email;
+  
+      // Save the updated user
+      await user.save();
+  
+      res.json({ message: 'User information updated successfully' });
+    } catch (error) {
+      next(error);
+    }
+  });
+
 module.exports = router;

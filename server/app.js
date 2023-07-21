@@ -4,11 +4,38 @@ const morgan = require('morgan')
 const app = express()
 module.exports = app
 
+// Retreives user information and mounted in app.js
+const UserMiddleware = (req, res, next) => {
+  // Check if the client is logged in
+  if (!req.user) {
+    next();
+    return;
+  }
+
+  // Attach the user information to req.user
+  req.user = {
+    id: req.body.id,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    email: req.body.email,
+    role: req.body.role,
+    userName: req.body.userName,
+    password: req.body.password,
+    createdAt: req.body.createdAt,
+    updatedAt: req.body.updatedAt,
+  };
+
+  next();
+};
+
 // logging middleware
 app.use(morgan('dev'))
 
 // body parsing middleware
 app.use(express.json())
+
+//Get user info for auth and api routes
+app.use(UserMiddleware);
 
 // auth and api routes
 app.use('/auth', require('./auth'))
@@ -41,3 +68,4 @@ app.use((err, req, res, next) => {
   console.error(err.stack)
   res.status(err.status || 500).send(err.message || 'Internal server error.')
 })
+
