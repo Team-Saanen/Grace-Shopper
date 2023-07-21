@@ -1,7 +1,26 @@
 const express = require('express');
 const router = express.Router();
 const { models: { Cart, Sales }} = require('../db');
-//!!! need cart.addProduct and sale.addProduct!!!
+
+// Get all route for cart
+router.get('/cart', async (req, res, next) => {
+  try {
+    const userId = req.user.id;
+    const cartData = await Cart.findAll({ where: { userId } });
+
+    //If cart data is empty or if the length of cart is 0
+    if (!cartData || cartData.length === 0) {
+      return res.json({ message: 'Your cart is empty' });
+    }
+
+    res.json(cartData);
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+
 // Route for adding a product to the cart
 router.put('/cart/:productId', async (req, res, next) => {
     try {
