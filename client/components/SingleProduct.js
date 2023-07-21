@@ -19,6 +19,7 @@ const SingleProduct = () => {
       <h2>{product.productName}</h2>
       <img>{product.productImg}</img>
       <p>{product.description}</p>
+      <p>{product.quantity}</p>
       <p>{product.price}</p>
     </>
   );
