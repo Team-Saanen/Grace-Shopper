@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { models: { Cart, Sales }} = require('../db');
+const { models: { Cart, Sales, Product }} = require('../db');
 
 // Get all route for cart
 router.get('/cart', async (req, res, next) => {
@@ -66,7 +66,7 @@ router.put('/cart/:productId/quantity', async (req, res, next) => {
   
       if (cartItem) {
         // If the item already exists in the cart, update the quantity
-        Cart.quantity = quantity;
+        cartItem.quantity = quantity;
         await Cart.save();
       } else {
         // If the item is not found in the cart, return an error
