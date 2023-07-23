@@ -1,12 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const { models: { Cart, Sales, Product }} = require('../db');
+const requireToken = require('./tokenHelper');
 
 // Get all route for cart
-router.get('/cart', async (req, res, next) => {
+router.get('/', requireToken, async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const cartData = await Cart.findAll({ where: { userId } });
+    const cartData = await Cart.findAll({ where: { id: userId } });
 
     //If cart data is empty or if the length of cart is 0
     if (!cartData || cartData.length === 0) {
@@ -22,7 +23,7 @@ router.get('/cart', async (req, res, next) => {
 
 
 // Route for adding a product to the cart
-router.put('/cart/:productId', async (req, res, next) => {
+router.put('/:productId', requireToken, async (req, res, next) => {
     try {
       const productId = req.params.productId;
       const userId = req.user.id;
@@ -50,7 +51,7 @@ router.put('/cart/:productId', async (req, res, next) => {
 
 // Only use this route if user is logged in
 // Route for updating the product quantity in the cart
-router.put('/cart/:productId/quantity', async (req, res, next) => {
+router.put('/:productId/quantity', requireToken, async (req, res, next) => {
     try {
       const productId = req.params.productId;
       const quantity = req.body.quantity;
@@ -82,7 +83,7 @@ router.put('/cart/:productId/quantity', async (req, res, next) => {
 
 
   // Delete route to delete a product anywhere in cart
-  router.delete('/cart/:productId', async (req, res, next) => {
+  router.delete('/:productId', requireToken, async (req, res, next) => {
     try {
       const productId = req.params.productId;
       const userId = req.user.id;
@@ -117,7 +118,7 @@ router.put('/cart/:productId/quantity', async (req, res, next) => {
   });
 
   // Checkout and clear cart in the database 
-  router.post('/checkout', async (req, res, next) => {
+  router.post('/checkout', requireToken, async (req, res, next) => {
     try {
       const userId = req.user.id;
       const cart = await Cart.findOne({ where: { userId } });
@@ -157,7 +158,7 @@ router.put('/cart/:productId/quantity', async (req, res, next) => {
   });
 
   // Route to change the quantity of a product in the cart
-  router.put('/cart/:productId/change', async (req, res, next) => {
+  router.put('/:productId/change', requireToken, async (req, res, next) => {
     try {
       const productId = req.params.productId;
       const userId = req.user.id;
