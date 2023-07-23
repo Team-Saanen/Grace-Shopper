@@ -27,6 +27,14 @@ async function seed() {
       userName: 'murphy', 
       password: 'abc123' 
     }),
+    User.create({ 
+      firstName: 'Steve',
+      lastName: 'Stevenson',
+      email: 'steve@aol.com',
+      userName: 'steve', 
+      password: 'abc123',
+      role: 'admin'
+    })
   ]);
 
   console.log(`seeded ${users.length} users`);
@@ -52,6 +60,7 @@ async function seed() {
     });
   }
 
+  console.log(`seeded ${products.length} products`);
   console.log(`seeded successfully`);
 }
 
