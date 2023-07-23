@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { models: { User, Products, Sales }} = require('../db');
+const requireToken = require('./tokenHelper');
 
 //Homepage
 router.get('/', async (req, res, next) => {
@@ -56,10 +57,11 @@ router.post('/signup', async (req, res, next) => {
 
 
 // Get client's user information based on log in status
-router.get('/user/:userId', (req, res, next) => {
+router.get('/user/:userId', requireToken, (req, res, next) => {
   // Check if the client is authenticated
   if (req.user) {
     // Retrieve the authenticated user's information
+    // TODO: Throw an error is the retrieved user's ID is not the authenticated user's ID.
     const userId = req.user.userId;
     const firstName = req.user.firstName;
     const lastName = req.user.lastName;
@@ -81,7 +83,7 @@ router.get('/user/:userId', (req, res, next) => {
 });
 
 // Get order history for a user based on their ID
-router.get('/user/:userId/order-history', async (req, res, next) => {
+router.get('/user/:userId/order-history', requireToken, async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
@@ -95,7 +97,7 @@ router.get('/user/:userId/order-history', async (req, res, next) => {
 });
   
   // Put to update the user's information based on ID
-  router.put('/user/:userId', async (req, res, next) => {
+  router.put('/user/:userId', requireToken, async (req, res, next) => {
     try {
       const userId = req.params.userId;
       const { firstName, lastName, email } = req.body;
