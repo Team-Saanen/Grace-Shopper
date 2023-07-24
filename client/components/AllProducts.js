@@ -19,12 +19,11 @@ const AllProducts = () => {
         <h1 id="all-plants">All Plants</h1>
         <div class="list-container">
           {products.map((product) => (
-            <p>{product.productName}</p>
-            // <div className="product">
-            //   <h3>{product.name}</h3>
-            //   <p>Price: ${product.price}</p>
-            //   <button onClick={addToCart}>Add to Cart</button>
-            // </div>
+            <div className="product">
+              <h3>{product.productName}</h3>
+              <img src={product.productImg} />
+              <p>Price: ${product.price}</p>
+            </div>
           ))}
         </div>
       </>

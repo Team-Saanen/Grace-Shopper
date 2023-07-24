@@ -17,7 +17,7 @@ const SingleProduct = () => {
         <h1>Plant Info</h1>
       </div>
       <h2>{product.productName}</h2>
-      <img>{product.productImg}</img>
+      <img src="{product.productImg}" />
       <p>{product.description}</p>
       <p>{product.quantity}</p>
       <p>{product.price}</p>
