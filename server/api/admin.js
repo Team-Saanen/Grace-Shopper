@@ -14,6 +14,55 @@ router.post("/products", async (req, res, next) => {
   }
 });
 
+// Edit a product based on the product ID and request body
+router.put("/products/:productId", async (req, res, next) => {
+  try {
+    // Check if the user is an admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    const productId = req.params.productId;
+    const updatedProduct = await Product.update(req.body, {
+      where: { id: productId },
+    });
+    
+
+    if (updatedProduct[0] === 0) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json({ message: 'Product updated successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
+// Delete a product based on the product ID
+router.delete("/products/:productId", async (req, res, next) => {
+  try {
+    // Check if the user is an admin
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+
+    const productId = req.params.productId;
+    const deletedProduct = await Product.destroy({
+      where: { id: productId },
+    });
+
+    if (!deletedProduct) {
+      return res.status(404).json({ error: 'Product not found' });
+    }
+
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    next(error);
+  }
+});
+
+
 // const { verifyToken } = require('../auth');
 
 // //admins -all users
@@ -48,4 +97,4 @@ router.post("/products", async (req, res, next) => {
 //   }
 // });
 
-// module.exports = router;
+module.exports = router;
