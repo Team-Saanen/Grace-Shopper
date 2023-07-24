@@ -17,9 +17,10 @@ const AllProducts = () => {
     <>
       <h1 id="all-plants">All Plants</h1>
       <div className="list-container">
-        {products.map((product) => (
+        <p>What if prod list?</p>
+        {/* {products.map((product) => (
           <SingleProduct key={product.id} product={product} />
-        ))}
+        ))} */}
       </div>
     </>
   );

@@ -23,7 +23,6 @@ const productsSlice = createSlice({
 });
 
 export const selectProducts = (state) => {
-    console.log(state);
     return state.products;
 }
 
