@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Router } from "react-router-dom";
 import history from "./history";
-import store from "./store/oldIndex";
+import store from "./store";
 import Main from "./components/Main";
 
 ReactDOM.render(
