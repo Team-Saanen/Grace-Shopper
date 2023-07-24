@@ -6,9 +6,8 @@ export const fetchSingleProduct = createAsyncThunk(
   async (productId) => {
     try {
       // double check api routes once routes are update
-      const response = await axios.get(`/api/products/${productId}`);
-      const product = response.data;
-      return product;
+      const { data } = await axios.get(`/api/products/${productId}`);
+      return data;
     } catch (err) {
       console.error("Failed to fetch single product:", err);
       throw err;
@@ -21,7 +20,7 @@ const productSlice = createSlice({
   initialState: {},
   extraReducers: (builder) => {
     builder.addCase(fetchSingleProduct.fulfilled, (state, action) => {
-      state.current = action.payload;
+      return action.payload;
     });
   },
 });

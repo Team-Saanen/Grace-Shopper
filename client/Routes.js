@@ -18,21 +18,21 @@ class Routes extends Component {
     const { isLoggedIn } = this.props;
 
     return (
-      <div>
+      <Switch>
         {isLoggedIn ? (
-          <Routes>
+          <React.Fragment>
             <Route path="/home" component={Home} />
             <Redirect to="/home" />
-          </Routes>
+          </React.Fragment>
         ) : (
-          <Routes>
-            <Route path="/product/:productId" element={<SingleProduct />} />
+          <React.Fragment>
             <Route path="/" exact component={Login} />
+            <Route path="/products/:productId" component={SingleProduct} />
             <Route path="/login" component={Login} />
             <Route path="/signup" component={Signup} />
-          </Routes>
+          </React.Fragment>
         )}
-      </div>
+      </Switch>
     );
   }
 }

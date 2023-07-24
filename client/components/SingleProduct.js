@@ -14,7 +14,7 @@ const SingleProduct = () => {
 
   return (
     <>
-      <div>
+      <div key={product.id}>
         <h1>Plant Info</h1>
       </div>
       <h2>{product.productName}</h2>
