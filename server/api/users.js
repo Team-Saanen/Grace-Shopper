@@ -4,7 +4,7 @@ const { models: { User, Products, Sales }} = require('../db');
 const requireToken = require('./tokenHelper');
 
 //Homepage
-router.get('/', async (req, res, next) => {
+router.get('/products', async (req, res, next) => {
     try{
         const products = await Products.findAll();
         res.json(products);
@@ -13,7 +13,7 @@ router.get('/', async (req, res, next) => {
     }
 });
 
-router.get('/:productId', async (req, res, next) => {
+router.get('/products/:productId', async (req, res, next) => {
   try {
       const product = await Products.findByPk(req.params.productId);
       if (product) {
