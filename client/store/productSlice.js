@@ -4,7 +4,7 @@ import axios from "axios";
 export const fetchSingleProduct = createAsyncThunk("/fetchSingleProduct", async (productId) => {
     try {
         // double check api routes once routes are update
-        const { data } = await axios.get(`/api/${productId}`)
+        const { data } = await axios.get(`/api/products/${productId}`)
         return data;
     } catch (err) {
         console.error("Failed to fetch single product:", err);
