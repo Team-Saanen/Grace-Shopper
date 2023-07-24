@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { models: {User }} = require('../db')
 module.exports = router
-// const jwt = requre('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 // jwt to verify if a web client is a) logged in, and
 // b) has privilages to view all user's as an admin
