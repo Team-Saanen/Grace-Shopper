@@ -1,6 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
+export const fetchCartAsync = createAsyncThunk("cart/fetchAll", async () => {
+    const { data } = await axios.get("/api/cart");
+    return data;
+  });
+
+
 export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, quantity }) => {
     try {
         // double check api routes once routes are update
@@ -35,6 +41,11 @@ const cartSlice = createSlice({
         productIds: [],
     },
     extraReducers: (builder) => {
+        // may need more in the fetch async
+        builder.addCase(fetchCartAsync.fulfilled, (state, action) => {
+            return action.payload;
+          });
+
         builder.addCase(addToCart.fulfilled, (state, action) => {
             const { productId } = action.payload;
             if (!state.productIds.includes(productId)) {
