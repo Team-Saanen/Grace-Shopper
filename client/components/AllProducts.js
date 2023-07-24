@@ -22,7 +22,7 @@ const AllProducts = () => {
           {products.map((product) => (
             <div className="product">
               <h3>{product.productName}</h3>
-              <Link to={`/${product.id}`}>
+              <Link to={`/products/${product.id}`}>
                 <img src={product.productImg} />
               </Link>
               <p>Price: ${product.price}</p>

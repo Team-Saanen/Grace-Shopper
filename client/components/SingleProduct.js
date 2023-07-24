@@ -1,15 +1,16 @@
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
-import { fetchSingleProduct } from "../store/productSlice";
+import { fetchSingleProduct, selectProduct } from "../store/productSlice";
 
 const SingleProduct = () => {
   const dispatch = useDispatch();
-  const product = useSelector((state) => state.product.fetchSingleProduct);
-  const { id } = useParams();
+  const product = useSelector(selectProduct);
+  const { productId } = useParams();
+  console.log("this should be the id", { productId });
   useEffect(() => {
-    dispatch(fetchSingleProduct(id));
-  }, []);
+    dispatch(fetchSingleProduct(productId));
+  }, [dispatch, productId]);
 
   return (
     <>
