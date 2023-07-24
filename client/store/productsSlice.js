@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchAllProducts = createAsyncThunk("/fetchAllProducts", async () => {
+export const fetchAllProducts = createAsyncThunk("fetchAllProducts", async () => {
     try {
         // double check api routes once routes are update
         const { data } = await axios.get("/api");
@@ -23,6 +23,7 @@ const productsSlice = createSlice({
 });
 
 export const selectProducts = (state) => {
+    console.log(state);
     return state.products;
 }
 

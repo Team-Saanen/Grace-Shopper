@@ -1,19 +1,22 @@
-import React from "react";
+import React, {useEffect} from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAllProducts } from "../store/productsSlice";
+import { fetchAllProducts, selectProducts } from "../store/productsSlice";
 import SingleProduct from "./SingleProduct";
 
 const AllProducts = () => {
   const dispatch = useDispatch();
 
-  const products = useSelector((state) => state.products);
+  // const products = useSelector((state) => state.products);
+  const products = useSelector(selectProducts);
+  
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, []);
+  
   return (
     <>
       <h1 id="all-plants">All Plants</h1>
-      <div class="list-container">
+      <div className="list-container">
         {products.map((product) => (
           <SingleProduct key={product.id} product={product} />
         ))}

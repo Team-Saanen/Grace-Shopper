@@ -4,11 +4,11 @@ const Navbar = () => {
   return (
     <>
       <header>
-        <div class="nav container">
-          <a href="#" class="logo">
+        <div className="nav container">
+          <a href="#" className="logo">
             Aloe There A
           </a>
-          <i class="bx bx-shopping-bag" id="cart-icon"></i>
+          <i className="bx bx-shopping-bag" id="cart-icon"></i>
         </div>
       </header>
     </>
