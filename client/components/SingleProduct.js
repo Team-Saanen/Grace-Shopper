@@ -5,7 +5,7 @@ import { fetchSingleProduct } from "../store/productSlice";
 
 const SingleProduct = () => {
   const dispatch = useDispatch();
-  const product = useSelector((state) => state.product);
+  const product = useSelector((state) => state.product.fetchSingleProduct);
   const { id } = useParams();
   useEffect(() => {
     dispatch(fetchSingleProduct(id));
@@ -17,7 +17,7 @@ const SingleProduct = () => {
         <h1>Plant Info</h1>
       </div>
       <h2>{product.productName}</h2>
-      <img src="{product.productImg}" />
+      <img src={product.productImg} />
       <p>{product.description}</p>
       <p>{product.quantity}</p>
       <p>{product.price}</p>

@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts, selectProducts } from "../store/productsSlice";
 import SingleProduct from "./SingleProduct";
+import { Link } from "react-router-dom/cjs/react-router-dom";
 
 const AllProducts = () => {
   const dispatch = useDispatch();
@@ -21,7 +22,9 @@ const AllProducts = () => {
           {products.map((product) => (
             <div className="product">
               <h3>{product.productName}</h3>
-              <img src={product.productImg} />
+              <Link to={`/${product.id}`}>
+                <img src={product.productImg} />
+              </Link>
               <p>Price: ${product.price}</p>
             </div>
           ))}
