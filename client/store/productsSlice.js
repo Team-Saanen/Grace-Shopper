@@ -5,7 +5,6 @@ export const fetchAllProducts = createAsyncThunk(
   "fetchAllProducts",
   async () => {
     try {
-      // double check api routes once routes are update
       const { data } = await axios.get("/api/products");
       return data;
     } catch (err) {
