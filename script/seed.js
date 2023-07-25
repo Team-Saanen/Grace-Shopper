@@ -3,16 +3,6 @@
 const {db, models: {User, Products, Cart, Sales} } = require('../server/db')
 const masseuse = require('./masseuse');
 
-const codysCart = [
-  {items: 1, quantity: 2},
-  {items: 45, quantity: 1},
-  {items: 100, quantity: 1}
-];
-
-const codysHistory = [
-
-];
-
 /**
  * seed - this function clears the database, updates tables to
  *      match the models, and populates the database.
@@ -62,12 +52,25 @@ async function seed() {
   console.log(`seeded ${products.length} products`);
 
   // Create some cart entries
-
   const cody = users[0];
-  console.log(cody.id);
+
+  const codysCart = await Promise.all([
+    Cart.create({items: 1, quantity: 2, userId: cody.id}),
+    Cart.create({items: 45, quantity: 1, userId: cody.id}),
+    Cart.create({items: 100, quantity: 1, userId: cody.id})
+  ]);
+  console.log(`Created a cart with ${codysCart.length} items for Cody`);
+
+  const codysHistory = await Promise.all([
+    Sales.create({items: 1, quantities: 2, date: new Date('2023-07-18'), userId: cody.id}),
+    Sales.create({items: 45, quantities: 1, date: new Date('2023-07-18'), userId: cody.id}),
+    Sales.create({items: 100, quantities: 1, date: new Date('2023-07-18'), userId: cody.id})
+  ]);
+  console.log(`Created records in sales for ${codysHistory.length} items`)
 
   console.log(`seeded successfully`);
 }
+
 
 /*
  We've separated the `seed` function from the `runSeed` function.
