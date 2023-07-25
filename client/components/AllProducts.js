@@ -13,7 +13,6 @@ const AllProducts = () => {
   }, []);
 
   const handleAddToCart = (productId) => {
-    const userid = 1;
     dispatch(addToCart({ productId, quantity: 1 }));
   };
 
