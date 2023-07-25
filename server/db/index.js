@@ -10,11 +10,13 @@ const Cart = require('./models/Cart')
 //associations could go here!
 
 User.hasMany(Sales);
-User.hasOne(Cart);
+User.hasMany(Cart);
 Sales.belongsTo(User);
 Cart.belongsTo(User);
-// Products.belongsToMany(Cart);
-// Products.belongsToMany(Sales);
+Products.belongsToMany(Cart);
+Cart.belongsTo(Products)
+Products.belongsToMany(Sales);
+Sales.belongsTo(Products);
 
 module.exports = {
   db,
