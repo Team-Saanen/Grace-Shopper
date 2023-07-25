@@ -7,7 +7,7 @@ const {
 // Create a new product based on the request body
 router.post("/products", async (req, res, next) => {
   try {
-    const newProduct = await Product.create(req.body);
+    const newProduct = await Products.create(req.body);
     res.status(201).json(newProduct);
   } catch (error) {
     next(error);
@@ -23,7 +23,7 @@ router.put("/products/:productId", async (req, res, next) => {
     }
 
     const productId = req.params.productId;
-    const updatedProduct = await Product.update(req.body, {
+    const updatedProduct = await Products.update(req.body, {
       where: { id: productId },
     });
     
@@ -48,7 +48,7 @@ router.delete("/products/:productId", async (req, res, next) => {
     }
 
     const productId = req.params.productId;
-    const deletedProduct = await Product.destroy({
+    const deletedProduct = await Products.destroy({
       where: { id: productId },
     });
 
@@ -62,6 +62,17 @@ router.delete("/products/:productId", async (req, res, next) => {
   }
 });
 
+router.get('/users/all', async (req, res, next) => {
+  try{
+    if (req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Not authorized' });
+    }
+    const users = await User.findAll();
+    res.json(users);
+  }catch(error){
+    next(error);
+}
+})
 
 // const { verifyToken } = require('../auth');
 
