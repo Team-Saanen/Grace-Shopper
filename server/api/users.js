@@ -54,6 +54,15 @@ router.get('/products/:productId', async (req, res, next) => {
 //     }
 //   });
 
+  router.get('/user', async (req, res, next) => {
+    try {
+      const userList = await User.findAll();
+      res.json(userList);
+    } catch (error) {
+      next(error);
+    }
+  });
+
 
 // Get client's user information based on log in status
 router.get('/user/:userId', (req, res, next) => {
