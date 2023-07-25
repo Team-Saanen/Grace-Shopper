@@ -25,34 +25,34 @@ router.get('/products/:productId', async (req, res, next) => {
   }
 });
 
-router.post('/signup', async (req, res, next) => {
-    try {
-      const { username, password } = req.body;
+// router.post('/signup', async (req, res, next) => {
+//     try {
+//       const { username, password } = req.body;
   
-      // Check if the username already exists
-      const existingUser = await User.findOne({ where: { username } });
-      if (existingUser) {
-        return res.status(409).json({ error: 'Username already exists' });
-      }
+//       // Check if the username already exists
+//       const existingUser = await User.findOne({ where: { username } });
+//       if (existingUser) {
+//         return res.status(409).json({ error: 'Username already exists' });
+//       }
 
-      // Check if the email already exists
-      const existingEmail = await User.findOne({ where: { email } });
-      if (existingEmail) {
-        return res.status(409).json({ error: 'Email already in use' });
-      }
+//       // Check if the email already exists
+//       const existingEmail = await User.findOne({ where: { email } });
+//       if (existingEmail) {
+//         return res.status(409).json({ error: 'Email already in use' });
+//       }
   
-      // Create a new user
-      const newUser = await User.create({
-        username,
-        password,
-        email
-      });
+//       // Create a new user
+//       const newUser = await User.create({
+//         username,
+//         password,
+//         email
+//       });
   
-      res.status(201).json({ message: 'User account created successfully', userId: newUser.id });
-    } catch (error) {
-      next(error);
-    }
-  });
+//       res.status(201).json({ message: 'User account created successfully', userId: newUser.id });
+//     } catch (error) {
+//       next(error);
+//     }
+//   });
 
 
 // Get client's user information based on log in status
