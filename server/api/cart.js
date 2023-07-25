@@ -4,11 +4,12 @@ const { models: { Cart, Sales, Product }} = require('../db');
 
 // Get all route for cart
 router.get('/cart', async (req, res, next) => {
+  console.log(req.user)
   try {
-    if (!req.user) {
-      return res.status(401).json({ message: 'User not authenticated' });
-    }
-    const userId = req.user.id;
+    // if (!req.user) {
+    //   return res.status(401).json({ message: 'User not authenticated' });
+    // }
+    const userId = req.query.userId;
     const cartData = await Cart.findAll({ where: { userId } });
 
     //If cart data is empty or if the length of cart is 0

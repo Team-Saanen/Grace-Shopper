@@ -2,17 +2,29 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItem from "./CartItem";
-import { fetchCartAsync,removeFromCart, selectCart  } from "../store/cartSlice";
+import { fetchCartAsync,removeFromCart, selectCart, setUserId } from "../store/cartSlice";
 import { updateSales } from "../store/salesSlice";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const cartProducts = useSelector(selectCart);
+  console.log(cartProducts);
+
 
   useEffect(() => {
-    dispatch(fetchCartAsync());
-  }, [dispatch]);
+    
+      let tempID = localStorage.getItem("tempID");
+      console.log(tempID, "tempID ")
+      
+      if (!tempID) {
+          tempID = Math.floor(Math.random() * 1000);
+          localStorage.setItem("tempID", tempID);
+      }
+      dispatch(fetchCartAsync(tempID));
+      dispatch(setUserId(tempID));
+      console.log(tempID, "cart.js not working")
+  }, []);
 
   const handleDelete = async (id) => {
     await dispatch(removeFromCart(id));
@@ -41,14 +53,14 @@ const Cart = () => {
       </nav>
 
       <h1>Cart Review</h1>
-        <div>
-          {cartProducts.map((cartItem) => (
-            <div key={cartItem.id}>
-              <CartItem cartItem={cartItem} />
-              <button onClick={() => handleDelete(cartItem.id)}>Delete</button>
-            </div>
-          ))}
-        </div>
+      <div>
+        {Array.isArray(cartProducts) && cartProducts.map((cartItem) => (
+          <div key={cartItem.id}>
+            <CartItem cartItem={cartItem} />
+            <button onClick={() => handleDelete(cartItem.id)}>Delete</button>
+          </div>
+        ))}
+      </div>
         <button onClick={handleCheckOut}>Checkout</button>
 
         {showConfirmation && (

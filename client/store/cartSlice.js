@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchCartAsync = createAsyncThunk("cart/fetchAll", async () => {
-    const { data } = await axios.get("/api/cart");
+export const fetchCartAsync = createAsyncThunk("cart/fetchAll", async (tempID) => {
+    console.log(`/api/cart?userId=${tempID}`)
+    const { data } = await axios.get(`/api/cart?userId=${tempID}`);
     return data;
   });
 
@@ -35,16 +36,26 @@ export const removeFromCart = createAsyncThunk("cart/removeFromCart", async (pro
     }
 });
 
+export const setUserId = createAsyncThunk("cart/setUserId", async (tempID) => {
+    try {
+        return tempID;
+    } catch (err) {
+        console.error("Failed to set user ID", err)
+        throw err;
+    };
+});
+
 const cartSlice = createSlice({
     name: "cart",
     initialState: {
-        userId: [],
+        userId: null,
         productIds: [],
     },
     extraReducers: (builder) => {
         // may need more in the fetch async
         builder.addCase(fetchCartAsync.fulfilled, (state, action) => {
-            action.payload = state.userId;
+            action.payload = state.cart;
+            console.log(action.payload, "action payload not working")
             return action.payload;
           });
 
@@ -58,19 +69,18 @@ const cartSlice = createSlice({
             const productIdToRemove = action.payload.productId;
             state.productIds = state.productIds.filter(id => id !== productIdToRemove);
         });
+        builder.addCase(setUserId.fulfilled, (state, action) => {
+            action.payload = state.userId;
+        })
     }
 });
 
 export const selectCart = (state) => {
-    if (state.userId && state.userId.isGuest && !state.user.id) {
-        let tempID = localStorage.getItem("tempID");
-        if (!tempID) {
-            tempID = Math.floor(Math.random() * 1000);
-            localStorage.setItem("tempID", tempID);
-        }
-        state.userId = tempID;
-    }
-    return state.userId;
+    return state.cart.productIds;
+};
+
+export const selectUserId = (state) => {
+    return state.cart.userId;
 };
 
 export default cartSlice.reducer;
