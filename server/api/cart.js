@@ -67,7 +67,7 @@ router.put('/cart/:productId/quantity', async (req, res, next) => {
         return res.status(404).json({ error: 'Cart not found' });
       }
   
-      const cartItems = await Cart.findAll({ where: { cartId: cart.id, productId } });
+      const cartItem = await Cart.findAll({ where: { cartId: cart.id, productId } });
   
       if (cartItem) {
         // If the item already exists in the cart, update the quantity
