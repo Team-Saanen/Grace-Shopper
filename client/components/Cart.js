@@ -1,20 +1,36 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import CartItem from "./CartItem";
-import { fetchCartAsync,removeFromCart  } from "../store/cartSlice";
+import { fetchCartAsync,removeFromCart, selectCart  } from "../store/cartSlice";
+import { updateSales } from "../store/salesSlice";
 
 const Cart = () => {
   const dispatch = useDispatch();
+  const [showConfirmation, setShowConfirmation] = useState(false);
+  const cartProducts = useSelector(selectCart);
 
   useEffect(() => {
     dispatch(fetchCartAsync());
   }, [dispatch]);
 
-  const cartProducts = useSelector((state) => state.cart);
-
   const handleDelete = async (id) => {
     await dispatch(removeFromCart(id));
+  };
+
+  const handleCheckOut = async () => {
+    try {
+      const items = cartProducts.map((item) => item.id);
+      const quantity = cartProducts.map((item) => item.CartItem.quantity);
+      const date = new Date().toISOString();
+
+      await dispatch(updateSales({ items, quantity, date }));
+      setShowConfirmation(true);
+      dispatch(fetchCartAsync());
+    }
+    catch(err) {
+      console.error("Failed to checkout: ", err)
+    }
   };
 
   return (
@@ -25,13 +41,21 @@ const Cart = () => {
       </nav>
 
       <h1>Cart Review</h1>
-
-      {cartProducts.map((cartItem) => (
-        <div key={cartItem.id}>
-          <CartItem cartItem={cartItem} />
-          <button onClick={() => handleDelete(cartItem.id)}>Delete</button>
+        <div>
+          {cartProducts.map((cartItem) => (
+            <div key={cartItem.id}>
+              <CartItem cartItem={cartItem} />
+              <button onClick={() => handleDelete(cartItem.id)}>Delete</button>
+            </div>
+          ))}
         </div>
-      ))}
+        <button onClick={handleCheckOut}>Checkout</button>
+
+        {showConfirmation && (
+          <div>
+            <h2>Thank you for your purchase!</h2>
+          </div>
+        )}
     </div>
   );
 };
