@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts, selectProducts } from "../store/productsSlice";
 import SingleProduct from "./SingleProduct";
-import { Link } from "react-router-dom/cjs/react-router-dom";
+import { Link } from "react-router-dom";
 
 const AllProducts = () => {
   const dispatch = useDispatch();
@@ -18,9 +18,9 @@ const AllProducts = () => {
     return (
       <>
         <h1 id="all-plants">All Plants</h1>
-        <div class="list-container">
+        <div className="list-container">
           {products.map((product) => (
-            <div className="product">
+            <div className="product" key={`product-${product.id}`}>
               <h3>{product.productName}</h3>
               <Link to={`/products/${product.id}`}>
                 <img src={product.productImg} />
