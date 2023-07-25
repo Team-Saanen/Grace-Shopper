@@ -12,16 +12,23 @@ const SingleProduct = () => {
     dispatch(fetchSingleProduct(productId));
   }, [dispatch, productId]);
 
+  const handleAddToCart = (productId) => {
+    dispatch(addToCart({ productId, quantity: 1 }));
+  };
+
   return (
     <>
       <div key={product.id}>
-        <h1>Plant Info</h1>
+        <h1 id="singleProductTitle">Plant Info</h1>
       </div>
-      <h2>{product.productName}</h2>
-      <img src={product.productImg} />
-      <p>{product.description}</p>
-      <p>{product.quantity}</p>
-      <p>{product.price}</p>
+      <div class="singleProduct">
+        <h2>{product.productName}</h2>
+        <img src={product.productImg} />
+        <p>{product.description}</p>
+        <p>{product.quantity}</p>
+        <p>{product.price}</p>
+        <button onClick={() => handleAddToCart(product.id)}>Add to Cart</button>
+      </div>
     </>
   );
 };
