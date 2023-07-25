@@ -22,13 +22,17 @@ router.get("/cart", async (req, res, next) => {
 });
 
 // Route for adding a product to the cart
-router.put("/cart/:productId", async (req, res, next) => {
+router.post("/cart/:productId", async (req, res, next) => {
   try {
     const productId = req.params.productId;
-    const userId = 1;
-    // const userId = req.user.id;
-
-    let cart = await Cart.findOne({ where: { userId } });
+    const quantity = req.body.quantity;
+    //Optional chaining for user
+    const userId = req.user?.id;
+    if (!userId) {
+      const tempUser = await User.create({ isGuest: true });
+      userId = tempUser.id;
+    }
+    let cart = await Cart.findAll({ where: { userId } });
 
     if (!cart) {
       cart = await Cart.create({ userId });
@@ -62,7 +66,7 @@ router.put("/cart/:productId/quantity", async (req, res, next) => {
       return res.status(404).json({ error: "Cart not found" });
     }
 
-    const cartItem = await Cart.findOne({
+    const cartItem = await Cart.findAll({
       where: { cartId: cart.id, productId },
     });
 
