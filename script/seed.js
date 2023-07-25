@@ -3,6 +3,16 @@
 const {db, models: {User, Products, Cart, Sales} } = require('../server/db')
 const masseuse = require('./masseuse');
 
+const codysCart = [
+  {items: 1, quantity: 2},
+  {items: 45, quantity: 1},
+  {items: 100, quantity: 1}
+];
+
+const codysHistory = [
+
+];
+
 /**
  * seed - this function clears the database, updates tables to
  *      match the models, and populates the database.
@@ -27,21 +37,19 @@ async function seed() {
       userName: 'murphy', 
       password: 'abc123' 
     }),
+    User.create({ 
+      firstName: 'Steve',
+      lastName: 'Stevenson',
+      email: 'steve@aol.com',
+      userName: 'steve', 
+      password: 'abc123',
+      role: 'admin'
+    })
   ]);
-
   console.log(`seeded ${users.length} users`);
 
-  // TODO: Is there a value to these returns?
-  // return {
-  //   users: {
-  //     cody: users[0],
-  //     murphy: users[1]
-  //   }
-  // }
-
-  // Create Products!!!!!
+  // Create Products
   const products = await masseuse();
-  // console.log(products[0]);
   for (const product of products) {
     await Products.create({
       productName: product.name,
@@ -51,6 +59,12 @@ async function seed() {
       price: product.price
     });
   }
+  console.log(`seeded ${products.length} products`);
+
+  // Create some cart entries
+
+  const cody = users[0];
+  console.log(cody.id);
 
   console.log(`seeded successfully`);
 }
