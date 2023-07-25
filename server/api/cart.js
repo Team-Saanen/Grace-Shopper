@@ -5,6 +5,9 @@ const { models: { Cart, Sales, Product }} = require('../db');
 // Get all route for cart
 router.get('/cart', async (req, res, next) => {
   try {
+    if (!req.user) {
+      return res.status(401).json({ message: 'User not authenticated' });
+    }
     const userId = req.user.id;
     const cartData = await Cart.findAll({ where: { userId } });
 

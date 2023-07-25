@@ -38,11 +38,13 @@ export const removeFromCart = createAsyncThunk("cart/removeFromCart", async (pro
 const cartSlice = createSlice({
     name: "cart",
     initialState: {
+        userId: [],
         productIds: [],
     },
     extraReducers: (builder) => {
         // may need more in the fetch async
         builder.addCase(fetchCartAsync.fulfilled, (state, action) => {
+            action.payload = state.userId;
             return action.payload;
           });
 
@@ -59,6 +61,16 @@ const cartSlice = createSlice({
     }
 });
 
-export const selectCart = (state) => state.cart;
+export const selectCart = (state) => {
+    if (state.userId && state.userId.isGuest && !state.user.id) {
+        let tempID = localStorage.getItem("tempID");
+        if (!tempID) {
+            tempID = Math.floor(Math.random() * 1000);
+            localStorage.setItem("tempID", tempID);
+        }
+        state.userId = tempID;
+    }
+    return state.userId;
+};
 
 export default cartSlice.reducer;
