@@ -22,8 +22,19 @@ const jwt = require('jsonwebtoken')
 // }
 
 router.post('/login', async (req, res, next) => {
+  const { username, password } = req.body;
   try {
-    res.send({ token: await User.authenticate(req.body)}); 
+    const user = await User.findOne({ where: { username } });
+    if(!user){
+      return res.status(401).send('Invalid username or password');
+    }
+
+    const passwordValidation = await user.validatePassword(password);
+
+    if(!passwordValidation){
+      return res.status(401).send('Invalid username or password');
+    }
+    res.status(200).send({ token: await User.authenticate(req.body)}); 
   } catch (err) {
     next(err)
   }
