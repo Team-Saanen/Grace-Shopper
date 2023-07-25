@@ -1,5 +1,6 @@
 import axios from 'axios'
-import history from '../history'
+// import history from '../history'
+import { useNavigate } from 'react-router-dom'
 
 const TOKEN = 'token'
 
@@ -39,8 +40,10 @@ export const authenticate = (username, password, method) => async dispatch => {
 }
 
 export const logout = () => {
+  const Navigate = useNavigate();
   window.localStorage.removeItem(TOKEN)
-  history.push('/login')
+  // history.push('/login')
+  Navigate('/');
   return {
     type: SET_AUTH,
     auth: {}
