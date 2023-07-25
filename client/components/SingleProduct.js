@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
 import { fetchSingleProduct, selectProduct } from "../store/productSlice";
+import { addToCart } from "../store/cartSlice";
 
 const SingleProduct = () => {
   const dispatch = useDispatch();
