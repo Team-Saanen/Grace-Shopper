@@ -32,7 +32,28 @@ router.post('/login', async (req, res, next) => {
 
 router.post('/signup', async (req, res, next) => {
   try {
-    const user = await User.create(req.body)
+    let user;
+    
+    // check if temporary user exists
+    if (req.body.tempUserId) {
+      user = await User.findByPk(req.body.tempUserId);
+      if (user) {
+        // update the user's information
+        user.firstName = req.body.firstName;
+        user.lastName = req.body.lastName;
+        user.email = req.body.email;
+        user.userName = req.body.userName;
+        user.password = req.body.password;
+        user.isGuest = false;
+        await user.save();
+      }
+    }
+    
+    // if user doesn't exist, create a new one
+    if (!user) {
+      user = await User.create(req.body);
+    }
+    
     res.send({token: await user.generateToken()})
   } catch (err) {
     if (err.name === 'SequelizeUniqueConstraintError') {
@@ -41,7 +62,8 @@ router.post('/signup', async (req, res, next) => {
       next(err)
     }
   }
-})
+});
+
 
 router.get('/me', async (req, res, next) => {
   try {
