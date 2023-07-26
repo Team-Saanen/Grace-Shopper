@@ -31,7 +31,7 @@ router.get("/cart", async (req, res, next) => {
 // Route for adding a product to the cart
 router.post("/cart/:productId", async (req, res, next) => {
   try {
-    const productId = req.params.productId;
+    const productId = req.params.items;
     const quantity = req.body.quantity;
     //Optional chaining for user
     const userId = req.user?.id;

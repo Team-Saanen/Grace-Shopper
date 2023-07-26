@@ -56,18 +56,19 @@ const Cart = () => {
       <div>
         {Array.isArray(cartProducts) && cartProducts.map((cartItem) => (
           <div key={cartItem.id}>
+            {/* Render the product information */}
             <CartItem cartItem={cartItem} />
             <button onClick={() => handleDelete(cartItem.id)}>Delete</button>
           </div>
         ))}
       </div>
-        <button onClick={handleCheckOut}>Checkout</button>
+      <button onClick={handleCheckOut}>Checkout</button>
 
-        {showConfirmation && (
-          <div>
-            <h2>Thank you for your purchase!</h2>
-          </div>
-        )}
+      {showConfirmation && (
+        <div>
+          <h2>Thank you for your purchase!</h2>
+        </div>
+      )}
     </div>
   );
 };
