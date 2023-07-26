@@ -93,39 +93,39 @@ router.put("/cart/:productId/quantity", async (req, res, next) => {
 });
 
 // Delete route to delete a product anywhere in cart
-router.delete("/cart/:productId", async (req, res, next) => {
-  try {
-    const productId = req.params.productId;
-    const userId = req.query.userId;
+// router.delete("/cart/:productId", async (req, res, next) => {
+//   try {
+//     const productId = req.params.productId;
+//     const userId = req.query.userId;
 
-    // Find the cart entry for the user
-    const cart = await Cart.findOne({ where: { userId } });
+//     // Find the cart entry for the user
+//     const cart = await Cart.findOne({ where: { userId } });
 
-    // Check if the cart exists
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
-    }
+//     // Check if the cart exists
+//     if (!cart) {
+//       return res.status(404).json({ error: "Cart not found" });
+//     }
 
-    // Find the index of the product in the productIds array
-    const productIndex = cart.productIds.indexOf(productId);
+//     // Find the index of the product in the productIds array
+//     const productIndex = cart.productIds.indexOf(productId);
 
-    // Check if the product exists in the cart
-    if (productIndex === -1) {
-      return res.status(404).json({ error: "Product not found in cart" });
-    }
+//     // Check if the product exists in the cart
+//     if (productIndex === -1) {
+//       return res.status(404).json({ error: "Product not found in cart" });
+//     }
 
-    // Remove the product from the arrays
-    cart.productIds.splice(productIndex, 1);
-    cart.quantities.splice(productIndex, 1);
+//     // Remove the product from the arrays
+//     cart.productIds.splice(productIndex, 1);
+//     cart.quantities.splice(productIndex, 1);
 
-    // Save the updated cart
-    await cart.save();
+//     // Save the updated cart
+//     await cart.save();
 
-    res.json({ message: "Product removed from cart successfully" });
-  } catch (error) {
-    next(error);
-  }
-});
+//     res.json({ message: "Product removed from cart successfully" });
+//   } catch (error) {
+//     next(error);
+//   }
+// });
 
 // Checkout and clear cart in the database
 router.post('/checkout', async (req, res, next) => {
@@ -159,36 +159,29 @@ router.post('/checkout', async (req, res, next) => {
 // Route to change the quantity of a product in the cart
 router.put("/cart/:productId/change", async (req, res, next) => {
   try {
-    const productId = req.params.productId;
-    const userId = req.user.id;
+    const productId = parseInt(req.params.productId);
+    const userId = 1; // Assuming you have userId available
     const quantity = req.body.quantity;
 
-    // Find the cart entry for the user
-    const cart = await Cart.findOne({ where: { userId } });
+    // Find the cart item entry for the user and product
+    const cartItem = await Cart.findOne({ where: { userId, items: productId } });
 
-    // Check if the cart exists
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
-    }
-
-    // Find the index of the product in the productIds array
-    const productIndex = cart.productIds.indexOf(productId);
-
-    // Check if the product exists in the cart
-    if (productIndex === -1) {
+    // Check if the cart item exists
+    if (!cartItem) {
       return res.status(404).json({ error: "Product not found in cart" });
     }
 
-    // Increase the quantity of the product
-    cart.quantities[productIndex] += quantity;
+    // Update the quantity of the product
+    Cart.quantity = quantity;
 
-    // Save the updated cart
-    await cart.save();
+    // Save the updated cart item
+    await cartItem.save();
 
-    res.json({ message: "Quantity increased successfully" });
+    res.json({ message: "Quantity updated successfully" });
   } catch (error) {
     next(error);
   }
 });
+
 
 module.exports = router;
