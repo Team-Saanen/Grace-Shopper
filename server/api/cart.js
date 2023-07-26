@@ -4,6 +4,9 @@ const {
   models: { Cart, Sales, Product },
 } = require("../db");
 
+const bodyParser = require('body-parser');
+router.use(bodyParser.json());
+
 // Get all route for cart
 router.get("/cart", async (req, res, next) => {
   console.log(req.user);
@@ -28,7 +31,7 @@ router.get("/cart", async (req, res, next) => {
 // Route for adding a product to the cart
 router.post("/cart/:productId", async (req, res, next) => {
   try {
-    const productId = req.params.productId;
+    const productId = req.params.items;
     const quantity = req.body.quantity;
     //Optional chaining for user
     const userId = req.user?.id;
@@ -62,7 +65,7 @@ router.put("/cart/:productId/quantity", async (req, res, next) => {
   try {
     const productId = req.params.productId;
     const quantity = req.body.quantity;
-    const userId = req.user.id;
+    const userId = req.query.userId;
 
     let cart = await Cart.findOne({ where: { userId } });
 
@@ -93,7 +96,7 @@ router.put("/cart/:productId/quantity", async (req, res, next) => {
 router.delete("/cart/:productId", async (req, res, next) => {
   try {
     const productId = req.params.productId;
-    const userId = req.user.id;
+    const userId = req.query.userId;
 
     // Find the cart entry for the user
     const cart = await Cart.findOne({ where: { userId } });
@@ -125,42 +128,29 @@ router.delete("/cart/:productId", async (req, res, next) => {
 });
 
 // Checkout and clear cart in the database
-router.post("/checkout", async (req, res, next) => {
+router.post('/checkout', async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const cart = await Cart.findOne({ where: { userId } });
+    const { userId, cartItems, date } = req.body;
 
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+    // Check if userId, cartItems, and date are provided
+    if (!userId || !cartItems || !date) {
+      return res.status(400).json({ error: 'Invalid data provided' });
     }
 
-    // Retrieve the productIds, quantities, and calculate the total price
-    const cartItems = await cart.getProducts();
-    const productIds = cartItems.map((item) => item.id);
-    const quantities = cartItems.map((item) => item.CartItem.quantity);
-
-    // Create a new sales entry
-    const newSale = await Sales.create({
-      userId,
-      productIds,
-      dateTime: new Date(),
-    });
-
-    // Add each cart item as a separate entry in the Sales table
-    for (let i = 0; i < cartItems.length; i++) {
-      await newSale.addProduct(cartItems[i], {
-        through: { quantity: quantities[i] },
+    // Create a new sales entry for each item-quantity pair
+    for (const cartItem of cartItems) {
+      const { items, quantity } = cartItem;
+      
+      // Create a new Sales entry for each item-quantity pair
+      await Sales.create({
+        userId,
+        items,
+        quantities: quantity,
+        date,
       });
     }
 
-    await newSale.save();
-
-    // Clear the user's cart after successful purchase
-    await cart.destroy();
-
-    res
-      .status(201)
-      .json({ message: "Purchase completed successfully", saleId: newSale.id });
+    res.status(201).json({ message: 'Purchase completed successfully' });
   } catch (error) {
     next(error);
   }

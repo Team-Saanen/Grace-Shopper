@@ -1,10 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-export const fetchCartAsync = createAsyncThunk("cart/fetchAll", async (tempID) => {
-    console.log(`/api/cart?userId=${tempID}`)
-    const { data } = await axios.get(`/api/cart?userId=${tempID}`);
-    return data;
+export const fetchCartAsync = createAsyncThunk('cart/fetchAll', async (tempID) => {
+    try {
+        //
+        const response = await axios.get(`/api/cart?userId=1`);
+        return response.data;
+      } catch (error) {
+        throw new Error("Failed to fetch cart data.");
+      }
   });
 
 
@@ -48,15 +52,12 @@ export const setUserId = createAsyncThunk("cart/setUserId", async (tempID) => {
 const cartSlice = createSlice({
     name: "cart",
     initialState: {
-        userId: null,
+        userId: 1,
         productIds: [],
     },
     extraReducers: (builder) => {
-        // may need more in the fetch async
         builder.addCase(fetchCartAsync.fulfilled, (state, action) => {
-            action.payload = state.cart;
-            console.log(action.payload, "action payload not working")
-            return action.payload;
+            state.productIds = action.payload;
           });
 
         builder.addCase(addToCart.fulfilled, (state, action) => {
