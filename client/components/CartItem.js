@@ -14,7 +14,7 @@ const CartItem = ({cartItem}) => {
         <div className='cart-card'>
             <h1>{cartItem.item}</h1>
             <h2>{cartItem.quantity}</h2>
-            <label htmlFor="quantityChange">Last Name:</label>
+            <label htmlFor="quantityChange">Quantity:</label>
             <input
                 name="quantity"
                 type="number"
