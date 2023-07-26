@@ -3,18 +3,20 @@ const router = express.Router();
 const {
   models: { Cart, Sales, Product },
 } = require("../db");
+const {requireToken} = require('./tokenHelper');
 
 const bodyParser = require('body-parser');
 router.use(bodyParser.json());
 
 // Get all route for cart
-router.get("/cart", async (req, res, next) => {
+router.get("/cart", requireToken, async (req, res, next) => {
   console.log(req.user);
   try {
     // if (!req.user) {
     //   return res.status(401).json({ message: 'User not authenticated' });
     // }
-    const userId = req.query.userId;
+    // const userId = req.query.userId;
+    const userId = req.user.id;
     const cartData = await Cart.findAll({ where: { userId } });
 
     //If cart data is empty or if the length of cart is 0
@@ -29,10 +31,11 @@ router.get("/cart", async (req, res, next) => {
 });
 
 // Route for adding a product to the cart
-router.post("/cart/:productId", async (req, res, next) => {
+router.post("/cart/:productId", requireToken, async (req, res, next) => {
   try {
     const productId = req.params.items;
     const quantity = req.body.quantity;
+
     //Optional chaining for user
     const userId = req.user?.id;
     if (!userId) {

@@ -71,19 +71,23 @@ router.get('/user/:userId', requireToken, async (req, res, next) => {
   if (req.user) {
     // Retrieve the authenticated user's information
     // TODO: Throw an error is the retrieved user's ID is not the authenticated user's ID.
-    const userId = req.user.userId;
+    const id = req.user.id;
     const firstName = req.user.firstName;
     const lastName = req.user.lastName;
-    const username = req.user.username;
+    const userName = req.user.userName;
     const email = req.user.email;
+    const imgUrl = req.user.imgUrl;
+    const role = req.user.role;
 
     // Return the user information as json
     res.json({
-      userId,
+      id,
       firstName,
       lastName,
       email,
-      username,
+      userName,
+      imgUrl,
+      role
     });
   } else {
     // Client is not authenticated
