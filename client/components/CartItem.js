@@ -1,13 +1,19 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { editQuantity } from '../store/cartItemSlice';
+import { removeFromCart } from '../store/cartSlice';
 
 const CartItem = ({cartItem}) => {
     const dispatch = useDispatch();
 
+    const handleDelete = async () => {
+        await dispatch(removeFromCart(cartItem.id));
+      };
+
     const handleQuantityChange = (evt) => {
         evt.preventDefault();
-        dispatch(editQuantity({ productId: cartItem.id, quantity: parseInt(evt.target.value) }));
+        const newQuantity = parseInt(evt.target.value)
+        dispatch(editQuantity({ productId: cartItem.id, quantity: newQuantity }));
     }
 
     return (
@@ -22,6 +28,7 @@ const CartItem = ({cartItem}) => {
                 value={cartItem.quantity}
                 onChange={handleQuantityChange}
             />
+            <button onClick={() => handleDelete(cartItem.id)}>Delete</button>
         </div>
     );
 };

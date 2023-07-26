@@ -3,8 +3,8 @@ import axios from "axios";
 
 export const editQuantity = createAsyncThunk("cart/editQuantity", async ({ productId, quantity }) => {
     try {
-        const { data } = await axios.put(`/api/cart/${productId}/change`, { quantity });
-        return data;
+        const response = await axios.put(`/api/cart/${productId}/change`, { quantity });
+        return response.data;
     } catch (err) {
         console.error("Failed to update quantity of items in cart:", err);
         throw err;
@@ -20,7 +20,10 @@ const cartItemSlice = createSlice({
         // double check
         builder.addCase(editQuantity.fulfilled, (state, action) => {
             const { productId, quantity } = action.payload;
-            state.quantities[productId] = quantity;
+            const cartItemToUpdate = state.find(item => item.id === productId);
+            if (cartItemToUpdate) {
+                cartItemToUpdate.quantity = quantity;
+            }
         });
     }
 });

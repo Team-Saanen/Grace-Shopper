@@ -15,14 +15,14 @@ export const fetchCartAsync = createAsyncThunk('cart/fetchAll', async (tempID) =
 export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, quantity }) => {
     try {
         // double check api routes once routes are update
-        const { data } = await axios.put(`/api/cart/${productId}`, { quantity }
+        const response = await axios.put(`/api/cart/${productId}`, { quantity }
         // , {
         //     headers: {
         //       Authorization: `Bearer ${token}` // Include the user's authentication token in the request
         //     }
         // }
         );
-        return data;
+        return response.data;
     } catch (err) {
         console.error("Failed to update cart with items:", err);
         throw err;
@@ -32,8 +32,8 @@ export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, 
 export const removeFromCart = createAsyncThunk("cart/removeFromCart", async (productId) => {
     try {
         // double check api routes once routes are update
-        const { data } = await axios.delete(`/api/cart/${productId}`);
-        return data;
+        const response = await axios.delete(`/api/cart/${productId}`);
+        return response.data;
     } catch (err) {
         console.error("Failed to delete item from cart:", err);
         throw err;
@@ -52,7 +52,7 @@ export const setUserId = createAsyncThunk("cart/setUserId", async (tempID) => {
 const cartSlice = createSlice({
     name: "cart",
     initialState: {
-        userId: 1,
+        userId: null,
         productIds: [],
     },
     extraReducers: (builder) => {
@@ -71,7 +71,7 @@ const cartSlice = createSlice({
             state.productIds = state.productIds.filter(id => id !== productIdToRemove);
         });
         builder.addCase(setUserId.fulfilled, (state, action) => {
-            action.payload = state.userId;
+            state.userId = action.payload;
         })
     }
 });
