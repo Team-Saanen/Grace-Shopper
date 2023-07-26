@@ -18,6 +18,13 @@ box-sizing: border-box;
   text-decoration: none;
 }
 
+.cart-link {
+  display: inline-block;
+  width: 30px; /* Adjust this value as needed */
+  height: 30px; /* Adjust this value as needed */
+  background-size: cover; /* Adjust as per your image requirement */
+}
+
 img{
   padding-top: 20px;
   width: 100%;
