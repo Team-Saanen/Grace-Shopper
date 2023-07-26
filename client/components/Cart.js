@@ -9,7 +9,7 @@ const Cart = () => {
   const dispatch = useDispatch();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const cartProducts = useSelector(selectCart);
-  console.log('cart products', cartProducts);
+  // console.log('cart products', cartProducts);
 
   useEffect(() => {
     

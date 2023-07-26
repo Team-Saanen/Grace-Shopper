@@ -1,27 +1,34 @@
 const express = require("express");
 const router = express.Router();
 const {
-  models: { Cart, Sales, Product },
+  models: { Cart, Sales, Products },
 } = require("../db");
 const {requireToken} = require('./tokenHelper');
 
 const bodyParser = require('body-parser');
+// const Products = require("../db/models/Products");
 router.use(bodyParser.json());
 
 // Get all route for cart
 router.get("/cart", requireToken, async (req, res, next) => {
-  console.log(req.user);
   try {
     // if (!req.user) {
     //   return res.status(401).json({ message: 'User not authenticated' });
     // }
     // const userId = req.query.userId;
     const userId = req.user.id;
-    const cartData = await Cart.findAll({ where: { userId } });
+    const cartData = await Cart.findAll({ where: { userId }});
 
     //If cart data is empty or if the length of cart is 0
     if (!cartData || cartData.length === 0) {
       return res.json({ message: "Your cart is empty" });
+    }
+
+    for (const cartItem of cartData) {
+      const product = await Products.findOne({where: {id: cartItem.id}});
+      // console.log(product.dataValues);
+      cartItem.dataValues.productName = product.dataValues.productName;
+      console.log(cartItem);
     }
 
     res.json(cartData);
@@ -48,7 +55,7 @@ router.post("/cart/:productId", requireToken, async (req, res, next) => {
       cart = await Cart.create({ userId });
     }
 
-    const product = await Product.findByPk(productId);
+    const product = await Products.findByPk(productId);
 
     if (!product) {
       return res.status(404).json({ error: "Product not found" });

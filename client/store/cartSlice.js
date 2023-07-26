@@ -1,13 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import { head } from "superagent";
+// import { head } from "superagent";
 
 export const fetchCartAsync = createAsyncThunk('cart/fetchAll', async (tempID) => {
     try {
         //
         const token = window.localStorage.getItem('authorization');
         const headers = {headers: {'authorization': token}};
-        const response = await axios.get(`/api/cart?userId=1`, headers);
+        const response = await axios.get(`/api/cart`, headers);
         return response.data;
       } catch (error) {
         throw new Error("Failed to fetch cart data.");
