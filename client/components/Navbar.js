@@ -10,7 +10,7 @@ const Navbar = () => {
       <header>
         <div className="nav container">
           <a href="/" className="logo">
-            Aloe There A
+            Home
           </a>
           <Link
             to="/cart"
