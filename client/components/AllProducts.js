@@ -19,7 +19,7 @@ const AllProducts = () => {
   if (products.length > 0) {
     return (
       <>
-        <h1 id="all-plants">All Plants</h1>
+        <h1 id="all-plants">Plants for Sale</h1>
         <div className="list-container">
           {products.map((product) => (
             <div className="product" key={`product-${product.id}`}>
