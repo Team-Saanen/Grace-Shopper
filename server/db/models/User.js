@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt');
 const axios = require('axios');
 
+const SALT_ROUNDS = 10;
+
 const User = db.define('user', {
     firstName: {
         type: Sequelize.STRING,
@@ -59,8 +61,8 @@ User.prototype.correctPassword = function(candidatePwd) {
   /**
    * classMethods
    */
-  User.authenticate = async function({ username, password }){
-      const user = await this.findOne({where: { username }})
+  User.authenticate = async function({ userName, password }){
+      const user = await this.findOne({where: { userName }})
       if (!user || !(await user.correctPassword(password))) {
         const error = Error('Incorrect username/password');
         error.status = 401;
@@ -94,6 +96,6 @@ User.prototype.correctPassword = function(candidatePwd) {
     }
   }
   
-  // User.beforeCreate(hashPassword)
-  // User.beforeUpdate(hashPassword)
+  User.beforeCreate(hashPassword)
+  User.beforeUpdate(hashPassword)
   User.beforeBulkCreate(users => Promise.all(users.map(hashPassword)))

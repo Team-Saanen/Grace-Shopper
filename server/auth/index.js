@@ -1,7 +1,7 @@
 const router = require('express').Router()
 const { models: {User }} = require('../db')
 module.exports = router
-// const jwt = requre('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 // jwt to verify if a web client is a) logged in, and
 // b) has privilages to view all user's as an admin
@@ -22,8 +22,20 @@ module.exports = router
 // }
 
 router.post('/login', async (req, res, next) => {
+  const { userName, password } = req.body;
   try {
     res.send({ token: await User.authenticate(req.body)}); 
+    // const user = await User.findOne({ where: { userName } });
+    // if(!user){
+    //   return res.status(401).send('Invalid username or password');
+    // }
+
+    // const passwordValidation = await user.validatePassword(password);
+
+    // if(!passwordValidation){
+    //   return res.status(401).send('Invalid username or password');
+    // }
+    // res.status(200).send({ token: await User.authenticate(req.body)}); 
   } catch (err) {
     next(err)
   }

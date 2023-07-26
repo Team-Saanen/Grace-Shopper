@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { models: { User, Products, Sales }} = require('../db');
+const {requireToken} = require('./tokenHelper');
 
 //Homepage
 router.get('/products', async (req, res, next) => {
@@ -65,23 +66,28 @@ router.get('/products/:productId', async (req, res, next) => {
 
 
 // Get client's user information based on log in status
-router.get('/user/:userId', (req, res, next) => {
+router.get('/user/:userId', requireToken, async (req, res, next) => {
   // Check if the client is authenticated
   if (req.user) {
     // Retrieve the authenticated user's information
-    const userId = req.user.userId;
+    // TODO: Throw an error is the retrieved user's ID is not the authenticated user's ID.
+    const id = req.user.id;
     const firstName = req.user.firstName;
     const lastName = req.user.lastName;
-    const username = req.user.username;
+    const userName = req.user.userName;
     const email = req.user.email;
+    const imgUrl = req.user.imgUrl;
+    const role = req.user.role;
 
     // Return the user information as json
     res.json({
-      userId,
+      id,
       firstName,
       lastName,
       email,
-      username,
+      userName,
+      imgUrl,
+      role
     });
   } else {
     // Client is not authenticated
@@ -90,7 +96,7 @@ router.get('/user/:userId', (req, res, next) => {
 });
 
 // Get order history for a user based on their ID
-router.get('/user/:userId/order-history', async (req, res, next) => {
+router.get('/user/:userId/order-history', requireToken, async (req, res, next) => {
   try {
     const userId = req.params.userId;
 
@@ -104,7 +110,7 @@ router.get('/user/:userId/order-history', async (req, res, next) => {
 });
   
   // Put to update the user's information based on ID
-  router.put('/user/:userId', async (req, res, next) => {
+  router.put('/user/:userId', requireToken, async (req, res, next) => {
     try {
       const userId = req.params.userId;
       const { firstName, lastName, email } = req.body;

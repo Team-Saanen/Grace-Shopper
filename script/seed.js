@@ -68,6 +68,7 @@ async function seed() {
   ]);
   console.log(`Created records in sales for ${codysHistory.length} items`)
 
+  console.log(`seeded ${products.length} products`);
   console.log(`seeded successfully`);
 }
 

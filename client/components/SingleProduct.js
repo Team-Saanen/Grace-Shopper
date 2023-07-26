@@ -8,7 +8,7 @@ const SingleProduct = () => {
   const dispatch = useDispatch();
   const product = useSelector(selectProduct);
   const { productId } = useParams();
-  console.log("this should be the id", { productId });
+  // console.log("this should be the id", { productId });
   useEffect(() => {
     dispatch(fetchSingleProduct(productId));
   }, [dispatch, productId]);
@@ -22,7 +22,7 @@ const SingleProduct = () => {
       <div key={product.id}>
         <h1 id="singleProductTitle">Your Future Plant</h1>
       </div>
-      <div class="singleProduct">
+      <div className="singleProduct">
         <h2>{product.productName}</h2>
         <img src={product.productImg} />
         <p>{product.description}</p>

@@ -6,4 +6,5 @@ npm-debug.log
 yarn-error.log
 package-lock.json
 public/bundle.js.LICENSE.txt
+.env
 yarn.lock

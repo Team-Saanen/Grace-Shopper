@@ -1,11 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-        // use this for log-in form component
 export const fetchSingleUser = createAsyncThunk("/fetchSingleUser", async (userId) => {
     try {
-        // double check api routes once routes are update
-        const { data } = await axios.get(`/api/${userId}`)
+        const token = window.localStorage.getItem('authorization');
+        const headers = {headers: {'authorization': token}};
+        const { data } = await axios.get(`/api/user/${userId}`, headers);
         return data;
     } catch (err) {
         console.error("Failed to fetch user:", err);
