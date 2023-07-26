@@ -62,7 +62,7 @@ router.put("/cart/:productId/quantity", async (req, res, next) => {
   try {
     const productId = req.params.productId;
     const quantity = req.body.quantity;
-    const userId = req.user.id;
+    const userId = req.query.userId;
 
     let cart = await Cart.findOne({ where: { userId } });
 
@@ -93,7 +93,7 @@ router.put("/cart/:productId/quantity", async (req, res, next) => {
 router.delete("/cart/:productId", async (req, res, next) => {
   try {
     const productId = req.params.productId;
-    const userId = req.user.id;
+    const userId = req.query.userId;
 
     // Find the cart entry for the user
     const cart = await Cart.findOne({ where: { userId } });
@@ -128,35 +128,32 @@ router.delete("/cart/:productId", async (req, res, next) => {
 router.post("/checkout", async (req, res, next) => {
   try {
     const userId = req.user.id;
-    const cart = await Cart.findOne({ where: { userId } });
+    const cart = await Cart.findAll({ where: { userId } });
 
     if (!cart) {
       return res.status(404).json({ error: "Cart not found" });
     }
 
     // Retrieve the productIds, quantities, and calculate the total price
-    const cartItems = await cart.getProducts();
-    const productIds = cartItems.map((item) => item.id);
-    const quantities = cartItems.map((item) => item.CartItem.quantity);
+    const cartItems = await cart.map((cartItem) => {
+      return {
+        productId: cartItem.id,
+        quantity: cartItem.quantity,
+        price: cartItem.price
+      };
+    });
 
     // Create a new sales entry
     const newSale = await Sales.create({
-      userId,
-      productIds,
-      dateTime: new Date(),
+      items: cartItems.map((item) => item.productId),
+      quantities: cartItems.map((item) => item.quantity),
+      date: new Date(),
     });
-
-    // Add each cart item as a separate entry in the Sales table
-    for (let i = 0; i < cartItems.length; i++) {
-      await newSale.addProduct(cartItems[i], {
-        through: { quantity: quantities[i] },
-      });
-    }
 
     await newSale.save();
 
     // Clear the user's cart after successful purchase
-    await cart.destroy();
+    await cart.destroy({ where: { userId } });
 
     res
       .status(201)
