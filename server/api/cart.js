@@ -4,6 +4,9 @@ const {
   models: { Cart, Sales, Product },
 } = require("../db");
 
+const bodyParser = require('body-parser');
+router.use(bodyParser.json());
+
 // Get all route for cart
 router.get("/cart", async (req, res, next) => {
   console.log(req.user);
@@ -125,39 +128,29 @@ router.delete("/cart/:productId", async (req, res, next) => {
 });
 
 // Checkout and clear cart in the database
-router.post("/checkout", async (req, res, next) => {
+router.post('/checkout', async (req, res, next) => {
   try {
-    const userId = req.user.id;
-    const cart = await Cart.findAll({ where: { userId } });
+    const { userId, cartItems, date } = req.body;
 
-    if (!cart) {
-      return res.status(404).json({ error: "Cart not found" });
+    // Check if userId, cartItems, and date are provided
+    if (!userId || !cartItems || !date) {
+      return res.status(400).json({ error: 'Invalid data provided' });
     }
 
-    // Retrieve the productIds, quantities, and calculate the total price
-    const cartItems = await cart.map((cartItem) => {
-      return {
-        productId: cartItem.id,
-        quantity: cartItem.quantity,
-        price: cartItem.price
-      };
-    });
+    // Create a new sales entry for each item-quantity pair
+    for (const cartItem of cartItems) {
+      const { items, quantity } = cartItem;
+      
+      // Create a new Sales entry for each item-quantity pair
+      await Sales.create({
+        userId,
+        items,
+        quantities: quantity,
+        date,
+      });
+    }
 
-    // Create a new sales entry
-    const newSale = await Sales.create({
-      items: cartItems.map((item) => item.productId),
-      quantities: cartItems.map((item) => item.quantity),
-      date: new Date(),
-    });
-
-    await newSale.save();
-
-    // Clear the user's cart after successful purchase
-    await cart.destroy({ where: { userId } });
-
-    res
-      .status(201)
-      .json({ message: "Purchase completed successfully", saleId: newSale.id });
+    res.status(201).json({ message: 'Purchase completed successfully' });
   } catch (error) {
     next(error);
   }
