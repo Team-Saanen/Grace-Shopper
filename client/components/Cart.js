@@ -2,28 +2,31 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import CartItem from "./CartItem";
-import { fetchCartAsync,removeFromCart, selectCart, setUserId } from "../store/cartSlice";
+import { fetchCartAsync,removeFromCart, selectCart, setUserId, selectUserId } from "../store/cartSlice";
 import { updateSales } from "../store/salesSlice";
+import { selectQuantities } from "../store/cartItemSlice";
 
 const Cart = () => {
   const dispatch = useDispatch();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const cartProducts = useSelector(selectCart);
-  console.log(cartProducts);
-
+  const userId = useSelector(selectUserId);
+  const quantities = useSelector(selectQuantities);
 
   useEffect(() => {
-    
+    dispatch(fetchCartAsync(userId));
+  }, [dispatch, userId]);
+
+  useEffect(() => {
       let tempID = localStorage.getItem("tempID");
-      console.log(tempID, "tempID ")
       
       if (!tempID) {
           tempID = Math.floor(Math.random() * 1000);
           localStorage.setItem("tempID", tempID);
+      } else {
+        dispatch(setUserId(tempID));
+        dispatch(fetchCartAsync(tempID));
       }
-      dispatch(fetchCartAsync(tempID));
-      dispatch(setUserId(tempID));
-      console.log(tempID, "cart.js not working")
   }, []);
 
   const handleDelete = async (id) => {
@@ -54,10 +57,10 @@ const Cart = () => {
 
       <h1>Cart Review</h1>
       <div>
-        {Array.isArray(cartProducts) && cartProducts.map((cartItem) => (
-          <div key={cartItem.id}>
-            <CartItem cartItem={cartItem} />
-            <button onClick={() => handleDelete(cartItem.id)}>Delete</button>
+        {Array.isArray(cartProducts) && cartProducts.map((productId) => (
+          <div key={productId}>
+            <CartItem productId={productId} quantity={quantities[productId]}/>
+            <button onClick={() => handleDelete(productId)}>Delete</button>
           </div>
         ))}
       </div>

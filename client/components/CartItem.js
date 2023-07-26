@@ -2,24 +2,24 @@ import React from 'react';
 import { useDispatch } from 'react-redux';
 import { editQuantity } from '../store/cartItemSlice';
 
-const CartItem = ({cartItem}) => {
+const CartItem = ({ productId, quantity}) => {
     const dispatch = useDispatch();
 
     const handleQuantityChange = (evt) => {
         evt.preventDefault();
-        dispatch(editQuantity({ productId: cartItem.id, quantity: parseInt(evt.target.value) }));
+        dispatch(editQuantity({ productId, quantity: parseInt(evt.target.value) }));
     }
 
     return (
         <div className='cart-card'>
-            <h1>{cartItem.item}</h1>
-            <h2>{cartItem.quantity}</h2>
+            <h1>{productId}</h1>
+            <h2>{quantity}</h2>
             <label htmlFor="quantityChange">Last Name:</label>
             <input
                 name="quantity"
                 type="number"
                 min="1"
-                value={cartItem.quantity}
+                value={quantity}
                 onChange={handleQuantityChange}
             />
         </div>
