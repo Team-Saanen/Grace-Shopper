@@ -2,17 +2,29 @@ import React from "react";
 import Navbar from "./Navbar";
 import AllProducts from "./AllProducts";
 
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import SingleProduct from "./SingleProduct";
+import User from "./User";
+import Cart from "./Cart"
+
+
 const Main = () => {
   return (
-    <>
+    <Router>
       <header>
         <Navbar />
       </header>
       <div id="title">
         <h1>Aloe There A</h1>
       </div>
-      <AllProducts />
-    </>
+      <Routes>
+        <Route path="/" element={<AllProducts />} />
+        <Route path="/products/:productId" element={<SingleProduct />} />
+        <Route path="/user/:id" element={<User />} />
+        <Route path="/cart" element={<Cart />} />
+      </Routes>
+      {/* <AllProducts /> */}
+    </Router>
   );
 };
 

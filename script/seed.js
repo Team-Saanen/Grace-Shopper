@@ -27,21 +27,19 @@ async function seed() {
       userName: 'murphy', 
       password: 'abc123' 
     }),
+    User.create({ 
+      firstName: 'Steve',
+      lastName: 'Stevenson',
+      email: 'steve@aol.com',
+      userName: 'steve', 
+      password: 'abc123',
+      role: 'admin'
+    })
   ]);
-
   console.log(`seeded ${users.length} users`);
 
-  // TODO: Is there a value to these returns?
-  // return {
-  //   users: {
-  //     cody: users[0],
-  //     murphy: users[1]
-  //   }
-  // }
-
-  // Create Products!!!!!
+  // Create Products
   const products = await masseuse();
-  // console.log(products[0]);
   for (const product of products) {
     await Products.create({
       productName: product.name,
@@ -51,9 +49,28 @@ async function seed() {
       price: product.price
     });
   }
+  console.log(`seeded ${products.length} products`);
+
+  // Create some cart entries
+  const cody = users[0];
+
+  const codysCart = await Promise.all([
+    Cart.create({items: 1, quantity: 2, userId: cody.id}),
+    Cart.create({items: 45, quantity: 1, userId: cody.id}),
+    Cart.create({items: 100, quantity: 1, userId: cody.id})
+  ]);
+  console.log(`Created a cart with ${codysCart.length} items for Cody`);
+
+  const codysHistory = await Promise.all([
+    Sales.create({items: 1, quantities: 2, date: new Date('2023-07-18'), userId: cody.id}),
+    Sales.create({items: 45, quantities: 1, date: new Date('2023-07-18'), userId: cody.id}),
+    Sales.create({items: 100, quantities: 1, date: new Date('2023-07-18'), userId: cody.id})
+  ]);
+  console.log(`Created records in sales for ${codysHistory.length} items`)
 
   console.log(`seeded successfully`);
 }
+
 
 /*
  We've separated the `seed` function from the `runSeed` function.

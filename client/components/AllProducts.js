@@ -1,30 +1,37 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAllProducts, selectProducts } from "../store/productsSlice";
-import SingleProduct from "./SingleProduct";
+import { Link } from "react-router-dom";
+import { addToCart } from "../store/cartSlice";
 
 const AllProducts = () => {
   const dispatch = useDispatch();
-
-  // const products = useSelector((state) => state.products);
   const products = useSelector(selectProducts);
 
   useEffect(() => {
     dispatch(fetchAllProducts());
   }, []);
 
+  const handleAddToCart = (productId) => {
+    dispatch(addToCart({ productId, quantity: 1 }));
+  };
+
   if (products.length > 0) {
     return (
       <>
         <h1 id="all-plants">All Plants</h1>
-        <div class="list-container">
+        <div className="list-container">
           {products.map((product) => (
-            <p>{product.productName}</p>
-            // <div className="product">
-            //   <h3>{product.name}</h3>
-            //   <p>Price: ${product.price}</p>
-            //   <button onClick={addToCart}>Add to Cart</button>
-            // </div>
+            <div className="product" key={`product-${product.id}`}>
+              <h3>{product.productName}</h3>
+              <Link to={`/products/${product.id}`}>
+                <img src={product.productImg} alt={product.productName} />
+              </Link>
+              <p>Price: ${product.price}</p>
+              <button onClick={() => handleAddToCart(product.id)}>
+                Add to Cart
+              </button>
+            </div>
           ))}
         </div>
       </>
