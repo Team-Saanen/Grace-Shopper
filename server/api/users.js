@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { models: { User, Products, Sales }} = require('../db');
-const requireToken = require('./tokenHelper');
+const {requireToken} = require('./tokenHelper');
 
 //Homepage
 router.get('/products', async (req, res, next) => {
@@ -66,7 +66,7 @@ router.get('/products/:productId', async (req, res, next) => {
 
 
 // Get client's user information based on log in status
-router.get('/user/:userId', requireToken, (req, res, next) => {
+router.get('/user/:userId', requireToken, async (req, res, next) => {
   // Check if the client is authenticated
   if (req.user) {
     // Retrieve the authenticated user's information

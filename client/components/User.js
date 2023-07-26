@@ -6,7 +6,8 @@ import { fetchSingleUser, selectUser } from "../store/userSlice";
 const User = () => {
   const dispatch = useDispatch();
   const user = useSelector(selectUser);
-  const { id } = useParams();
+  // const { id } = useParams();
+  const id = 3;
 
   useEffect(() => {
     dispatch(fetchSingleUser(id));
