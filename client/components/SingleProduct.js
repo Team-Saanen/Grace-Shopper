@@ -22,7 +22,7 @@ const SingleProduct = () => {
       <div key={product.id}>
         <h1 id="singleProductTitle">Plant Info</h1>
       </div>
-      <div class="singleProduct">
+      <div className="singleProduct">
         <h2>{product.productName}</h2>
         <img src={product.productImg} />
         <p>{product.description}</p>

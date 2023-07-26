@@ -71,7 +71,7 @@ const cartSlice = createSlice({
             state.productIds = state.productIds.filter(id => id !== productIdToRemove);
         });
         builder.addCase(setUserId.fulfilled, (state, action) => {
-            action.payload = state.userId;
+            state.userId = action.payload;
         })
     }
 });
