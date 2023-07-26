@@ -20,9 +20,16 @@ box-sizing: border-box;
 
 .cart-link {
   display: inline-block;
-  width: 30px; /* Adjust this value as needed */
-  height: 30px; /* Adjust this value as needed */
-  background-size: cover; /* Adjust as per your image requirement */
+  width: 30px; 
+  height: 30px; 
+  background-size: cover; 
+}
+
+.user-link {
+  display: inline-block;
+  width: 30px; 
+  height: 30px; 
+  background-size: cover;
 }
 
 img{
